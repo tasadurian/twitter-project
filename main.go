@@ -12,7 +12,6 @@ type Scream struct {
 
 func init() {
 	http.Handle("/assets/", http.StripPrefix("/assets", http.FileServer(http.Dir("assets/"))))
-	http.Handle("/templates/", http.StripPrefix("/templates", http.FileServer(http.Dir("templates/"))))
 
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/api/tweets", tweetHandler)
