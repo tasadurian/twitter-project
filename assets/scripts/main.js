@@ -30,13 +30,12 @@ var createTweets = function(tweetContent) {
   var tweets = document.createElement('li');
   tweets.setAttribute("class", "list-group-item");
   tweets.textContent = tweetContent;
-
   tweetList.appendChild(tweets);
 };
 
 var loopJSON = function(json) {
   for (var i = 0; i < json.length; i++) {
-    createTweets(json[i].ID);
+    createTweets(json[i].Message);
   }
 };
 

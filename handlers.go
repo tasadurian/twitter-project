@@ -75,6 +75,7 @@ func tweetHandler(res http.ResponseWriter, req *http.Request) {
 		}
 		scream.Time = time.Now()
 		scream.Username = profile.Username
+		scream.Email = u.Email
 		err = createScream(ctx, &scream)
 		if err != nil {
 			http.Error(res, err.Error(), 500)
