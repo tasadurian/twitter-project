@@ -16,20 +16,21 @@ var scream = function() {
   });
 };
 
-var createTweets = function(tweetContent, user) {
+var createTweets = function(tweetContent, user, time) {
   var tweetList = document.querySelector('#list');
   var tweets = document.createElement('li');
   var userName = document.createElement('p');
   tweets.setAttribute("class", "list-group-item");
-  tweets.innerHTML = '<strong>' + user + '</strong>' + '<p>' + tweetContent +
-    '</p>';
+  var output = '<strong>' + user + '</strong>';
+  output += '<em>' + time + '</em>';
+  output += '<p>' + tweetContent + '</p>';
+  tweets.innerHTML = output;
   tweetList.appendChild(tweets);
-
 };
 
 var loopJSON = function(json) {
   for (var i = 0; i < json.length; i++) {
-    createTweets(json[i].Message, json[i].Username);
+    createTweets(json[i].Message, json[i].Username, json[i].Time);
   }
 };
 

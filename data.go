@@ -8,6 +8,10 @@ import (
 	"google.golang.org/appengine/datastore"
 )
 
+const (
+	Kitchen = "3:04PM"
+)
+
 type Scream struct {
 	ID       int64
 	Username string
