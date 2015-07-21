@@ -11,20 +11,23 @@ var scream = function() {
   var screamButton = document.querySelector('#screamButton');
   screamButton.addEventListener('click', function() {
     var message = window.prompt("SCREAM HERE!");
-    var date = new Date("2011-04-20 09:30:51.01");
-    var time = String(date);
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/api/tweets");
     xhr.send(JSON.stringify({
-      Message: message,
-      Time: time
+      Message: message
     }));
+    xhr.onreadystatechange = function(evt) {
+      evt.preventDefault();
+      if (xhr.status === 200 && xhr.readyState === 4) {
+        location.reload();
+      }
+    };
   });
 };
 
 var createTweets = function(tweetContent) {
-  tweetList = document.querySelector('#list');
-  tweets = document.createElement('li');
+  var tweetList = document.querySelector('#list');
+  var tweets = document.createElement('li');
   tweets.setAttribute("class", "list-group-item");
   tweets.textContent = tweetContent;
 
@@ -38,8 +41,11 @@ var loopJSON = function(json) {
 };
 
 var getTweets = function() {
-  httpRequest = new XMLHttpRequest();
-  httpRequest.open('GET', '/api/tweets', true);
+  var username = location.pathname.split("/").pop();
+
+  var httpRequest = new XMLHttpRequest();
+  httpRequest.open('GET', '/api/tweets' + (username ? ("?username=" +
+    username) : ""), true);
   httpRequest.setRequestHeader("Content-Type",
     "application/json;charset=UTF-8");
   httpRequest.send(null);
