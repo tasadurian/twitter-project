@@ -1,12 +1,3 @@
-var login = function() {
-  var loginButton = document.querySelector('#loginButton');
-  loginButton.addEventListener('click', function() {
-    // var xhr = new XMLHttpRequest();
-    // xhr.open("POST", "/");
-    // xhr.send()
-  });
-};
-
 var scream = function() {
   var screamButton = document.querySelector('#screamButton');
   screamButton.addEventListener('click', function() {
@@ -25,17 +16,20 @@ var scream = function() {
   });
 };
 
-var createTweets = function(tweetContent) {
+var createTweets = function(tweetContent, user) {
   var tweetList = document.querySelector('#list');
   var tweets = document.createElement('li');
+  var userName = document.createElement('p');
   tweets.setAttribute("class", "list-group-item");
-  tweets.textContent = tweetContent;
+  tweets.innerHTML = '<strong>' + user + '</strong>' + '<p>' + tweetContent +
+    '</p>';
   tweetList.appendChild(tweets);
+
 };
 
 var loopJSON = function(json) {
   for (var i = 0; i < json.length; i++) {
-    createTweets(json[i].Message);
+    createTweets(json[i].Message, json[i].Username);
   }
 };
 
@@ -61,5 +55,19 @@ var getTweets = function() {
   };
 };
 
+var followFunction = function() {
+  var username = location.pathname.split("/").pop();
+  var followButton = document.querySelector('#followButton');
+  followButton.addEventListener('click', function() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/follow');
+    xhr.send(JSON.stringify(username));
+    xhr.onreadystatechange = function(evt) {
+      console.log('follow');
+    };
+  });
+};
+
 scream();
 getTweets();
+followFunction();

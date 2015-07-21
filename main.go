@@ -7,5 +7,7 @@ func init() {
 
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/api/tweets", tweetHandler)
+	http.HandleFunc("/api/follow", followHandler)
 	http.HandleFunc("/login", loginHandler)
+	http.HandleFunc("/logout", logoutHandler)
 }

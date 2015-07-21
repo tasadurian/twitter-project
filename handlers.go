@@ -28,6 +28,7 @@ func loginHandler(res http.ResponseWriter, req *http.Request) {
 
 	profile, err := getProfile(c, u.Email)
 	if err != nil || profile.Username == "" {
+
 		if req.Method == "POST" {
 			err = createProfile(c, &Profile{
 				Username: req.FormValue("username"),
@@ -38,8 +39,13 @@ func loginHandler(res http.ResponseWriter, req *http.Request) {
 			return
 		}
 	}
-
+	http.SetCookie(res, &http.Cookie{Name: "logged_in", Value: "true"})
 	http.Redirect(res, req, "/"+profile.Username, 302)
+}
+
+func logoutHandler(res http.ResponseWriter, req *http.Request) {
+	http.SetCookie(res, &http.Cookie{Name: "logged_in", Value: ""})
+	http.Redirect(res, req, "/", 302)
 }
 
 func tweetHandler(res http.ResponseWriter, req *http.Request) {
@@ -89,4 +95,35 @@ func tweetHandler(res http.ResponseWriter, req *http.Request) {
 	default:
 		http.Error(res, "method not allowed", 405)
 	}
+}
+func followHandler(res http.ResponseWriter, req *http.Request) {
+	ctx := appengine.NewContext(req)
+	u := user.Current(ctx)
+	switch req.Method {
+	case "POST":
+		var userName string
+		err := json.NewDecoder(req.Body).Decode(&userName)
+		if err != nil {
+			http.Error(res, err.Error(), 500)
+			return
+		}
+		err = follow(ctx, u.Email, userName)
+		if err != nil {
+			http.Error(res, err.Error(), 500)
+			return
+		}
+		json.NewEncoder(res).Encode(true)
+	case "GET":
+		profile, err := getProfile(ctx, u.Email)
+		if err != nil {
+			http.Error(res, err.Error(), 500)
+			return
+		}
+		json.NewEncoder(res).Encode(profile.Following)
+	case "DELETE":
+		// delete a follower
+	default:
+		http.Error(res, "method not allowed", 405)
+	}
+
 }

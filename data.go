@@ -48,8 +48,9 @@ func getScreams(ctx context.Context, username string) ([]*Scream, error) {
 }
 
 type Profile struct {
-	Username string
-	Email    string
+	Username  string
+	Email     string
+	Following []string
 }
 
 func getProfile(ctx context.Context, email string) (*Profile, error) {
@@ -62,4 +63,20 @@ func createProfile(ctx context.Context, profile *Profile) error {
 	key := datastore.NewKey(ctx, "Profile", profile.Email, 0, nil)
 	_, err := datastore.Put(ctx, key, profile)
 	return err
+}
+func follow(ctx context.Context, email string, followee string) error {
+	profile, err := getProfile(ctx, email)
+	if err != nil {
+		return err
+	}
+	for _, f := range profile.Following {
+		if f == followee {
+			return nil
+		}
+		if followee == "" {
+			return nil
+		}
+	}
+	profile.Following = append(profile.Following, followee)
+	return createProfile(ctx, profile)
 }
