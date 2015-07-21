@@ -14,7 +14,7 @@ var scream = function() {
     var date = new Date("2011-04-20 09:30:51.01");
     var time = String(date);
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/");
+    xhr.open("POST", "/api/tweets");
     xhr.send(JSON.stringify({
       Message: message,
       Time: time

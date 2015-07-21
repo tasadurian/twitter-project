@@ -24,10 +24,10 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func profileHandler(res http.ResponseWriter, req *http.Request) {
-	http.ServeFile(res, req, "templates/home.html")
+	http.ServeFile(res, req, "templates/profile.html")
 }
 func homeHandler(res http.ResponseWriter, req *http.Request) {
-	http.ServeFile(res, req, "templates/profile.html")
+	http.ServeFile(res, req, "templates/home.html")
 }
 
 func tweetHandler(res http.ResponseWriter, req *http.Request) {

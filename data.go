@@ -10,7 +10,7 @@ import (
 func createScream(ctx context.Context, scream *Scream) error {
 	u := user.Current(ctx)
 	key := datastore.NewKey(ctx, "Scream", u.Email, 0, nil)
-	_, err := datastore.Put(ctx, key, &scream)
+	_, err := datastore.Put(ctx, key, scream)
 	if err != nil {
 		return err
 	}
