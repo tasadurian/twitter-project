@@ -8,6 +8,8 @@ import (
 	"golang.org/x/net/context"
 
 	"google.golang.org/appengine/datastore"
+	"google.golang.org/appengine/mail"
+	"google.golang.org/appengine/user"
 )
 
 type Scream struct {
@@ -26,10 +28,11 @@ func createScream(ctx context.Context, scream *Scream) error {
 	}
 	if strings.Contains(scream.Message, "@") {
 		getUser := scanString(scream.Message)
-		profile, err := getProfileByUsername(ctx, getUser)
+		profileMention, err := getProfileByUsername(ctx, getUser)
 		if err != nil {
-			//asdf
+			return err
 		}
+		return sendMail(ctx, profileMention)
 	}
 	return nil
 }
@@ -111,4 +114,14 @@ func scanString(message string) string {
 		}
 	}
 	return user
+}
+func sendMail(ctx context.Context, mentionProfile *Profile) error {
+	u := user.Current(ctx)
+	msg := &mail.Message{
+		Sender:  u.Email,
+		To:      []string{},
+		Subject: "Someone mentioned you!",
+		Body:    fmt.Sprintf("Someone mentioned you!"),
+	}
+	return mail.Send(ctx, msg)
 }

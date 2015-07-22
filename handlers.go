@@ -126,17 +126,3 @@ func followHandler(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, "method not allowed", 405)
 	}
 }
-
-// func mail(res http.ResponseWriter, req *http.Request, userName string) {
-// 	ctx := appengine.NewContext(req)
-// 	u := user.Current(ctx)
-// 	msg := &mail.Message{
-// 		Sender:  u.Email,
-// 		To:      []string{},
-// 		Subject: "Someone mentioned you!",
-// 		Body:    fmt.Sprintf("Someone mentioned you!"),
-// 	}
-// 	if err := mail.Send(ctx, msg); err != nil {
-// 		http.Error(res, "Couldn't send email: %v", 405)
-// 	}
-// }
