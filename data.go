@@ -1,15 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
 	"golang.org/x/net/context"
 
 	"google.golang.org/appengine/datastore"
-)
-
-const (
-	Kitchen = "3:04PM"
 )
 
 type Scream struct {
@@ -21,11 +19,17 @@ type Scream struct {
 }
 
 func createScream(ctx context.Context, scream *Scream) error {
-	//u := user.Current(ctx)
 	key := datastore.NewIncompleteKey(ctx, "Scream", nil)
 	_, err := datastore.Put(ctx, key, scream)
 	if err != nil {
 		return err
+	}
+	if strings.Contains(scream.Message, "@") {
+		getUser := scanString(scream.Message)
+		profile, err := getProfileByUsername(ctx, getUser)
+		if err != nil {
+			//asdf
+		}
 	}
 	return nil
 }
@@ -63,6 +67,19 @@ func getProfile(ctx context.Context, email string) (*Profile, error) {
 	return &profile, datastore.Get(ctx, key, &profile)
 }
 
+func getProfileByUsername(ctx context.Context, username string) (*Profile, error) {
+	q := datastore.NewQuery("Profile").Filter("Username =", username).Limit(1)
+	var profiles []Profile
+	_, err := q.GetAll(ctx, &profiles)
+	if err != nil {
+		return nil, err
+	}
+	if len(profiles) == 0 {
+		return nil, fmt.Errorf("profile not found")
+	}
+	return &profiles[0], nil
+}
+
 func createProfile(ctx context.Context, profile *Profile) error {
 	key := datastore.NewKey(ctx, "Profile", profile.Email, 0, nil)
 	_, err := datastore.Put(ctx, key, profile)
@@ -83,4 +100,15 @@ func follow(ctx context.Context, email string, followee string) error {
 	}
 	profile.Following = append(profile.Following, followee)
 	return createProfile(ctx, profile)
+}
+
+func scanString(message string) string {
+	user := ""
+	words := strings.Split(message, " ")
+	for _, value := range words {
+		if strings.HasPrefix(value, "@") {
+			user = value[1:len(value)]
+		}
+	}
+	return user
 }
