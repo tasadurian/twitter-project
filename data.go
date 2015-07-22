@@ -9,7 +9,6 @@ import (
 
 	"google.golang.org/appengine/datastore"
 	"google.golang.org/appengine/mail"
-	"google.golang.org/appengine/user"
 )
 
 type Scream struct {
@@ -116,10 +115,9 @@ func scanString(message string) string {
 	return user
 }
 func sendMail(ctx context.Context, mentionProfile *Profile) error {
-	u := user.Current(ctx)
 	msg := &mail.Message{
-		Sender:  u.Email,
-		To:      []string{},
+		Sender:  "<admin@secret-spark-101320.appspotmail.com>",
+		To:      []string{mentionProfile.Email},
 		Subject: "Someone mentioned you!",
 		Body:    fmt.Sprintf("Someone mentioned you!"),
 	}
